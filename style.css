@@ -44,7 +44,6 @@ footer {
   font-family: "Poppins", sans-serif;
 }
 .about .about-content,
-.services .serv-content,
 .skills .skills-content,
 .contact .contact-content {
   display: flex;
@@ -260,15 +259,8 @@ section .title::after {
   color: crimson;
   background: none;
 }
-/* span a .about-buttons-style {
-  color: aquamarine;
-  background-color: darkblue;
-} */
-/* span #about-url a {
-  display: flex;
-  justify-content: space-evenly;
-} */
-/* services section styling */
+
+/* services (projects) section styling */
 .services,
 .teams {
   color: #fff;
@@ -283,8 +275,15 @@ section .title::after {
   background: #111;
   content: "what i provide";
 }
+/* project cards: equal-height responsive grid (3 / 2 / 1 columns) */
+.services .serv-content {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
 .services .serv-content .card {
-  width: calc(33% - 20px);
+  width: 100%;
   background: #222;
   text-align: center;
   border-radius: 6px;
@@ -301,6 +300,10 @@ section .title::after {
 .services .serv-content .card:hover .box {
   transform: scale(1.05);
 }
+.services .serv-content .card img {
+  max-width: 100%;
+  height: auto;
+}
 .services .serv-content .card i {
   font-size: 50px;
   color: crimson;
@@ -310,9 +313,13 @@ section .title::after {
   color: #fff;
 }
 .services .serv-content .card .text {
-  font-size: 25px;
+  font-size: 22px;
   font-weight: 500;
   margin: 10px 0 7px 0;
+}
+.services .serv-content .card p {
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 /* skills section styling */
@@ -476,15 +483,6 @@ section .title::after {
   height: 65px;
   align-items: center;
 }
-/* #address {
-  margin-bottom: 10px;
-  padding-bottom: 5px;
-  margin-left: 30px;
-  font-size: 25px;
-  color: crimson;
-  font-weight: 500;
-  color: #333;
-} */
 .svg-phone {
   font-size: 25px;
   color: crimson;
@@ -499,7 +497,6 @@ section .title::after {
 /* adding contact icon color */
 .row img {
   color: crimson;
-  /* background-color: crimson; */
   font-size: 45px;
   width: 33px;
 }
@@ -650,9 +647,8 @@ footer span a:hover {
   .about .about-content .right {
     flex: 100%;
   }
-  .services .serv-content .card {
-    width: calc(50% - 10px);
-    margin-bottom: 20px;
+  .services .serv-content {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .skills .skills-content .column,
   .contact .contact-content .column {
@@ -674,8 +670,8 @@ footer span a:hover {
   .home .home-content a {
     font-size: 20px;
   }
-  .services .serv-content .card {
-    width: 100%;
+  .services .serv-content {
+    grid-template-columns: 1fr;
   }
 }
 
