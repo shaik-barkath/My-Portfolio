@@ -1,86 +1,145 @@
 $(document).ready(function () {
-    $(window).scroll(function () {
-        // sticky navbar on scroll script
-        if (this.scrollY > 20) {
-            $('.navbar').addClass("sticky");
-        } else {
-            $('.navbar').removeClass("sticky");
-        }
+  /* =========================================================
+     1. Sticky navbar + scroll-up button
+     ========================================================= */
+  $(window)
+    .on("scroll", function () {
+      const y = $(window).scrollTop();
+      $(".navbar").toggleClass("sticky", y > 20);
+      $(".scroll-up-btn").toggleClass("show", y > 500);
+    })
+    .trigger("scroll");
 
-        // scroll-up button show/hide script
-        if (this.scrollY > 500) {
-            $('.scroll-up-btn').addClass("show");
-        } else {
-            $('.scroll-up-btn').removeClass("show");
-        }
+  $(".scroll-up-btn").on("click", function () {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  /* =========================================================
+     2. Mobile menu (hamburger)
+     ========================================================= */
+  const $menu = $(".navbar .menu");
+  const $icon = $(".navbar .max-width > .menu-btn i");
+
+  // open / close with the hamburger button
+  $(".navbar .max-width > .menu-btn").on("click", function () {
+    $menu.toggleClass("active");
+    $icon.toggleClass("active");
+  });
+
+  // close the menu after tapping a link
+  $(".navbar .menu li a").on("click", function () {
+    $menu.removeClass("active");
+    $icon.removeClass("active");
+  });
+
+  /* =========================================================
+     3. Typing animation
+     ========================================================= */
+  if (typeof Typed !== "undefined") {
+    const roles = [
+      "Java Developer",
+      "Spring Boot Developer",
+      "Backend Developer",
+      "SQL Developer",
+    ];
+
+    new Typed(".typing", {
+      strings: roles,
+      typeSpeed: 100,
+      backSpeed: 60,
+      loop: true,
     });
 
-    // slide-up script
-    $('.scroll-up-btn').click(function () {
-        $('html').animate({ scrollTop: 0 });
-        // removing smooth scroll on slide-up button click
-        $('html').css("scrollBehavior", "auto");
+    new Typed(".typing-2", {
+      strings: roles,
+      typeSpeed: 100,
+      backSpeed: 60,
+      loop: true,
     });
+  }
 
-    $('.navbar .menu li a').click(function () {
-        // applying again smooth scroll on menu items click
-        $('html').css("scrollBehavior", "smooth");
+  /* =========================================================
+     4. Education carousel
+     ========================================================= */
+  if ($.fn.owlCarousel) {
+    $(".carousel").owlCarousel({
+      margin: 20,
+      loop: true,
+      autoplay: true,
+      autoplayTimeout: 2000,
+      autoplayHoverPause: true,
+      responsive: {
+        0: { items: 1, nav: false },
+        600: { items: 2, nav: false },
+        1000: { items: 3, nav: false },
+      },
     });
+  }
 
-    // toggle menu/navbar script
-    $('.menu-btn').click(function () {
-        $('.navbar .menu').toggleClass("active");
-        $('.menu-btn i').toggleClass("active");
-    });
+  /* =========================================================
+     5. Contact form validation
+     ========================================================= */
+  const form = document.getElementById("form-data");
+  if (!form) return;
 
-    // typing text animation script
-    var typed = new Typed(".typing", {
-        strings: ["Java Developer", "Web Developer", "UI Designer", "Programmer"],
-        typeSpeed: 100,
-        backSpeed: 50,
-        loop: true
-    });
+  // let our own validation run instead of the browser's default popups
+  form.noValidate = true;
 
-    var typed = new Typed(".typing-2", {
-        strings: ["Java Developer", "Web Developer", "UI Designer", "Programmer"],
-        typeSpeed: 100,
-        backSpeed: 50,
-        loop: true
-    });
+  const nameInput = form.querySelector(".field.name input");
+  const emailInput = form.querySelector(".field.email input");
+  const subjectInput = form.querySelector(
+    ".field:not(.name):not(.email):not(.textarea) input"
+  );
+  const textareaInput = form.querySelector(".textarea textarea");
 
-    // owl carousel script
-    $('.carousel').owlCarousel({
-        margin: 20,
-        loop: true,
-        autoplay: true,
-        autoplayTimeOut: 2000,
-        autoplayHoverPause: true,
-        responsive: {
-            0: {
-                items: 1,
-                nav: false
-            },
-            600: {
-                items: 2,
-                nav: false
-            },
-            1000: {
-                items: 3,
-                nav: false
-            }
-        }
+  function validateName(name) {
+    return name.trim() !== "";
+  }
+
+  function validateEmail(email) {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailPattern.test(email.trim());
+  }
+
+  function validateSubject(subject) {
+    return subject.trim() !== "";
+  }
+
+  function validateTextarea(message) {
+    return message.trim() !== "";
+  }
+
+  const rules = [
+    { el: nameInput, valid: validateName },
+    { el: emailInput, valid: validateEmail },
+    { el: subjectInput, valid: validateSubject },
+    { el: textareaInput, valid: validateTextarea },
+  ];
+
+  // returns true/false and colours the border red when invalid
+  function check(rule) {
+    if (!rule.el) return true;
+    const ok = rule.valid(rule.el.value);
+    rule.el.style.borderColor = ok ? "" : "red";
+    return ok;
+  }
+
+  // clear the red border as soon as the user fixes the field
+  rules.forEach(function (rule) {
+    if (rule.el) {
+      rule.el.addEventListener("input", function () {
+        check(rule);
+      });
+    }
+  });
+
+  form.addEventListener("submit", function (event) {
+    let isValid = true;
+    rules.forEach(function (rule) {
+      if (!check(rule)) isValid = false;
     });
+    if (!isValid) {
+      event.preventDefault();
+    }
+  });
 });
-
-// message me after submit form all input filed empty
-// let btn = document.querySelector('#submit-button');
-// btn.addEventListener('click', function () {
-//     alert('form submitted');
-//     // let result = event.target.value;
-//     // console.log(result);
-//     // form.reset();
-// })
-// let form=document.querySelector('#form-data');
-// form.addEventListener('onSubmit',function(){
-
-// })
